@@ -1,5 +1,5 @@
-# Ignore build artifacts
-/target/
+# Ignore the build artifacts from the nested folder
+backend/target/
 
 # Ignore log files
 *.log
