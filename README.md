@@ -25,7 +25,7 @@ This project is an end-to-end demonstration of Full-stack, DevOps, and MLOps.
 | Domain | Technology |
 | :--- | :--- |
 | **Frontend** | React, Vercel |
-| **Backend API** | Node.js (Express) OR Spring Boot, Render |
+| **Backend API** | Spring Boot (Java), Render |
 | **ML Service** | Python (Flask), Render |
 | **Databases** | MongoDB Atlas (Main), InfluxDB (Time-Series) |
 | **DevOps** | Docker, GitHub Actions (CI/CD), Kubernetes (Local) |
