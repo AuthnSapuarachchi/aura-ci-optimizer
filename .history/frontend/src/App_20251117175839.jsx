@@ -39,7 +39,6 @@ function App() {
         // 4. Save the JSON response in our state
         setAnalysisResult(data);
         setIsLoading(false);
-        fetchAllLogs();
       })
       .catch(error => {
         // 5. Handle any errors
@@ -47,10 +46,8 @@ function App() {
         setAnalysisResult({ error: 'Failed to upload log.' });
         setIsLoading(false);
       });
-      
-  };
 
-  const fetchAllLogs = () => {
+      const fetchAllLogs = () => {
   fetch('http://localhost:8080/api/v1/log/all')
     .then(response => response.json())
     .then(data => {
@@ -59,13 +56,8 @@ function App() {
       setLogList(data);
     })
     .catch(error => console.error('Error fetching logs:', error));
+};
   };
-
-    // useEffect hook: Runs once on component mount
-  useEffect(() => {
-  fetchAllLogs();
-  }, []); // <-- The empty array [] means "run this only once"
-
   
   return (
     <div className="App">
@@ -96,35 +88,6 @@ function App() {
           </div>
         )}
       </header>
-
-        {/* NEW SECTION: LOG LIST */}
-  <div className="log-list-container">
-    <h2>Recent Analyses</h2>
-    <table className="log-table">
-      <thead>
-        <tr>
-          <th>Project ID</th>
-          <th>Status</th>
-          <th>Duration (s)</th>
-          <th>Uploaded At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* We loop over the logList state and create a row for each item */}
-        {logList.map(log => (
-          <tr key={log.id}>
-            <td>{log.projectId}</td>
-            <td>{log.parsedStatus}</td>
-            <td>{log.parsedDurationSeconds}</td>
-            {/* Format the date to be more readable */}
-            <td>{new Date(log.uploadedAt).toLocaleString()}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  {/* END NEW SECTION */}
-
     </div>
   )
 }
