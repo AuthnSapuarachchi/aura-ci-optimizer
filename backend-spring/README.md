@@ -18,6 +18,9 @@ This is the Java/Spring Boot API for the Aura project.
 
     # On Windows (PowerShell)
     $env:MONGO_DB_URI = "your-mongodb-connection-string"
+
+    * `MONGO_DB_URI`: Your MongoDB connection string.
+    * `JWT_SECRET_KEY`: Your Base64-encoded JWT secret.
     ```
 2.  `cd` into the `backend-spring` folder.
 3.  Run `./mvnw spring-boot:run` (or `mvnw.cmd` on Windows).
@@ -26,6 +29,7 @@ This is the Java/Spring Boot API for the Aura project.
 
 * `GET /api/v1/health`: Checks if the server is running.
 * `POST /api/v1/log/upload`: Uploads a raw log file as text for analysis.
+
 
 
 
