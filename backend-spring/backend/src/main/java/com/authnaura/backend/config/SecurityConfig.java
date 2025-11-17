@@ -4,6 +4,7 @@ import com.authnaura.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,6 +45,10 @@ public class SecurityConfig {
 
                 // Define which paths are public and which are protected
                 .authorizeHttpRequests(authz -> authz
+
+                        // Allow all preflight (OPTIONS) requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Our web config for CORS will still be active
                         .requestMatchers("/api/v1/log/**").authenticated() // <-- Make log routes public *for now*
                         .requestMatchers("/api/v1/health").permitAll()  // <-- Make health check public
