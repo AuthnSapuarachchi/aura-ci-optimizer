@@ -1,6 +1,6 @@
 # --- Build Stage ---
-# Use an image that has Java 21 (instead of 17)
-FROM maven:3.9.6-eclipse-temurin-21-focal AS build
+# Use an image that has Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copy the wrapper and pom.xml from the nested 'backend' folder
@@ -20,8 +20,8 @@ COPY backend/src ./src
 RUN ./mvnw clean package -DskipTests
 
 # --- Final Stage ---
-# Use a Java 21 JRE (instead of 17) to run the app
-FROM eclipse-temurin:21-jre-focal
+# Use a Java 21 JRE to run the app
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the .jar file we built in the "build" stage
