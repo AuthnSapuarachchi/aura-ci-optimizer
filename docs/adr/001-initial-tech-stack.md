@@ -1,23 +1,20 @@
-# ADR 001: Backend Choice - Spring Boot
+# ADR 001: Initial Tech Stack for MVP
 
 * **Date:** 2025-11-17
-* **Status:** Accepted
+* **Status:** Proposed
 
 ## Context
-We need to build a robust, scalable, and professional backend API for the Aura project. The choice is between Node.js (a modern, fast-prototyping stack) and Spring Boot (an enterprise-grade, robust stack). The goal is to build a strong "Enterprise Engineer" portfolio project.
+We need to build the MVP, which consists of a frontend, a backend, and a simple parsing script. We need a database for user data. We must use the free stack we identified.
 
 ## Decision
-We will use **Spring Boot (Java)** for the backend API.
+We will use the **MERN** stack for the main application, plus a **Python/Flask** service.
+
+1.  **Frontend:** **React**. It's the most popular frontend library, which is good for my portfolio. It will be hosted on Vercel.
+2.  **Backend:** **Node.js (Express)**. It's fast to prototype with, uses JavaScript (like the frontend), and is well-supported on Render's free tier.
+3.  **Database:** **MongoDB Atlas**. The free tier is perfect for our user/project data, and its "schemaless" nature is flexible for prototyping.
+4.  **Parsing Service:** **Python (Flask)**. The log parsing and future ML work *must* be in Python. We will build it as a separate, small API from day one. It will be hosted on Render.
 
 ## Consequences
-This decision has several clear trade-offs:
-
-### Pros:
-* **Enterprise Standard:** Spring Boot is the industry standard for large, corporate applications (banks, insurance, etc.). This strongly aligns with the "Enterprise Engineer" goal.
-* **Robust & Type-Safe:** Java is a strongly typed language, which reduces runtime errors and makes the large project more stable and maintainable.
-* **Powerful Ecosystem:** We gain access to the mature Spring ecosystem, including Spring Security (for authentication) and Spring Data (for database access), which are powerful and professional.
-
-### Cons:
-* **Language Context Switching:** The project will now use three different languages (React for JavaScript, Spring Boot for Java, and the ML Service for Python). This adds complexity.
-* **Steeper Learning Curve:** Spring Boot is a massive framework and is more complex to set up and configure than a simple Node.js/Express server.
-* **More Verbose:** Java code is generally more "verbose" (requires more lines of code) than JavaScript, which can slow down initial development.
+* This project will be a **microservices architecture** from the start (a Node.js service and a Python service).
+* We will need to manage communication between these two backend services.
+* The frontend (React) will *only* talk to the Node.js backend. The Node.js backend will talk to the Python service.
