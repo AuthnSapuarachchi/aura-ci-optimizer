@@ -1,16 +1,14 @@
 # --- Build Stage ---
-FROM maven:3.9.6-eclipse-temurin-17-focal AS build
-
+# Use an image that has Java 21 (instead of 17)
+FROM maven:3.9.6-eclipse-temurin-21-focal AS build # <-- FIX #1
 WORKDIR /app
 
 # Copy the wrapper and pom.xml from the nested 'backend' folder
 COPY backend/.mvn/ .mvn
 COPY backend/mvnw backend/pom.xml ./
 
-# --- THIS IS THE FIX ---
 # Add execute permission to the Maven wrapper script
 RUN chmod +x ./mvnw
-# --- END OF FIX ---
 
 # Download all dependencies
 RUN ./mvnw dependency:go-offline
@@ -23,7 +21,8 @@ RUN ./mvnw clean package -DskipTests
 
 
 # --- Final Stage ---
-FROM eclipse-temurin:17-jre-focal
+# Use a Java 21 JRE (instead of 17) to run the app
+FROM eclipse-temurin:21-jre-focal # <-- FIX #2
 WORKDIR /app
 
 # Copy the .jar file we built in the "build" stage
