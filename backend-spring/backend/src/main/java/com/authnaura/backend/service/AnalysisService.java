@@ -14,6 +14,10 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AnalysisService {
 
+    // This is a "record", a simple data-holder class
+    // It must match the JSON from Python *exactly*
+    public record PythonAnalysisResult(String parsedStatus, int parsedDurationSeconds) {}
+
     private final RestTemplate restTemplate;
     private final String mlServiceUrl;
 
@@ -24,23 +28,22 @@ public class AnalysisService {
         this.mlServiceUrl = mlServiceUrl;
     }
 
-    public String analyzeLog(String logText) {
-        // Set the headers
+    // Change the return type from String to our new record
+    public PythonAnalysisResult analyzeLog(String logText) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-
-        // Create the request object
         HttpEntity<String> request = new HttpEntity<>(logText, headers);
 
-        // Make the POST call to the Python service
-        // We expect the response to be a String (the JSON)
-        String analysisJson = restTemplate.postForObject(
+        // This is the new part!
+        // We ask RestTemplate to convert the JSON response
+        // directly into our new Java object.
+        PythonAnalysisResult analysisResult = restTemplate.postForObject(
                 mlServiceUrl,
                 request,
-                String.class
+                PythonAnalysisResult.class // <-- Changed from String.class
         );
 
-        return analysisJson;
+        return analysisResult;
     }
 
 }

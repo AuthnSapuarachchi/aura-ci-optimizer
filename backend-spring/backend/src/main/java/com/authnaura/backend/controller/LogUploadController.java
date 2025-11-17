@@ -1,40 +1,51 @@
 package com.authnaura.backend.controller;
 
+import com.authnaura.backend.model.LogAnalysis;
+import com.authnaura.backend.repository.LogAnalysisRepository;
 import com.authnaura.backend.service.AnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.authnaura.backend.service.AnalysisService.PythonAnalysisResult; // Import our new record
 
 @RestController
 @RequestMapping("/api/v1/log")
 public class LogUploadController {
 
     private final AnalysisService analysisService;
+    private final LogAnalysisRepository logAnalysisRepository; // <-- Add this
 
     @Autowired
-    public LogUploadController(AnalysisService analysisService) {
+    public LogUploadController(AnalysisService analysisService,
+                               LogAnalysisRepository logAnalysisRepository) {
         this.analysisService = analysisService;
+        this.logAnalysisRepository = logAnalysisRepository;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadLog(@RequestBody String logFileText) {
+    public ResponseEntity<LogAnalysis> uploadLog(@RequestBody String logFileText) {
 
-        // This is the full "vertical slice"!
-        // 1. We get the raw text from the user (React)
-        // 2. We pass it to our AnalysisService
-        // 3. AnalysisService sends it to the Python service
-        // 4. We get the JSON analysis back and return it
+        // 1. Get analysis from Python service
+        PythonAnalysisResult analysis = analysisService.analyzeLog(logFileText);
 
-        String analysisJson = analysisService.analyzeLog(logFileText);
+        // 2. Create our complete data object
+        // We'll hard-code a "projectId" for now
+        LogAnalysis logToSave = new LogAnalysis(
+                "mvp-project",       // hard-coded project ID
+                logFileText,             // the raw log
+                analysis.parsedStatus(), // the status from Python
+                analysis.parsedDurationSeconds() // the duration from Python
+        );
 
-        // We return the raw JSON string from the Python service
-        // We set the content type so the browser knows it's JSON
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(analysisJson);
+        // 3. Save it to the database!
+        LogAnalysis savedLog = logAnalysisRepository.save(logToSave);
+
+
+        // 4. Return the *saved* object to the user
+        // This includes the new ID and uploadedAt timestamp
+        return ResponseEntity.ok(savedLog);
     }
 }
