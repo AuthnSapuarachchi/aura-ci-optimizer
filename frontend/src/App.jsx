@@ -1,34 +1,79 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  // Create 'state' variables
+  // 'logText' will hold the text from the text area
+  const [logText, setLogText] = useState('');
+
+  // 'analysisResult' will hold the JSON response from our backend
+  const [analysisResult, setAnalysisResult] = useState(null);
+
+  // 'isLoading' will show a "Loading..." message
+  const [isLoading, setIsLoading] = useState(false);
+
+  // This function is called when the button is clicked
+  const handleSubmit = () => {
+    // 1. Set loading to true
+    setIsLoading(true);
+    setAnalysisResult(null);
+
+    // 2. Call our Spring Boot API
+    // We use the 'fetch' API built into the browser
+    fetch('http://localhost:8080/api/v1/log/upload', {
+      method: 'POST',
+      headers: {
+        // We tell the server we are sending plain text
+        'Content-Type': 'text/plain',
+      },
+      // The 'body' is the raw log text from our state
+      body: logText,
+    })
+      .then(response => response.json()) // 3. Convert the response to JSON
+      .then(data => {
+        // 4. Save the JSON response in our state
+        setAnalysisResult(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        // 5. Handle any errors
+        console.error('Error uploading log:', error);
+        setAnalysisResult({ error: 'Failed to upload log.' });
+        setIsLoading(false);
+      });
+  };
+  
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="App">
+      <header className="App-header">
+        <h1>Aura - CI/CD Log Analyzer</h1>
+        <p>Paste your raw log text below to analyze it.</p>
+
+        <textarea
+          rows="15"
+          cols="80"
+          placeholder="Paste your log file here..."
+          value={logText}
+          onChange={e => setLogText(e.target.value)}
+        />
+
+        <button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? 'Analyzing...' : 'Analyze Log'}
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+        {/* This section displays the result */}
+        {analysisResult && (
+          <div className="result-box">
+            <h2>Analysis Result:</h2>
+            {/* <pre> tag is good for showing formatted JSON */}
+            <pre>
+              {JSON.stringify(analysisResult, null, 2)}
+            </pre>
+          </div>
+        )}
+      </header>
+    </div>
   )
 }
 
