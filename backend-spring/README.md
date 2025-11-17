@@ -18,4 +18,6 @@ This is the Java/Spring Boot API for the Aura project.
 ## API Endpoints
 
 * `GET /api/v1/health`: Checks if the server is running.
+* `POST /api/v1/log/upload`: Uploads a raw log file as text for analysis.
+
 
