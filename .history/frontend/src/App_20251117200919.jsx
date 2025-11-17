@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import Login from './components/Login'
-import Register from './components/Register'
-import Dashboard from './components/Dashboard'
 
 function App() {
 
@@ -35,13 +32,6 @@ function App() {
       </div>
     );
   }
-
-  // If we DO have a token, show the main application
-  return (
-    <div className="App">
-      <Dashboard token={token} onLogout={handleLogout} />
-    </div>
-  );
 
   
 }

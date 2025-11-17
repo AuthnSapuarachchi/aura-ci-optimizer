@@ -1,10 +1,12 @@
 package com.authnaura.backend.controller;
 
 import com.authnaura.backend.model.LogAnalysis;
+import com.authnaura.backend.model.User;
 import com.authnaura.backend.repository.LogAnalysisRepository;
 import com.authnaura.backend.service.AnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.authnaura.backend.service.AnalysisService.PythonAnalysisResult; // Import our new record
 
@@ -25,7 +27,9 @@ public class LogUploadController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<LogAnalysis> uploadLog(@RequestBody String logFileText) {
+    public ResponseEntity<LogAnalysis> uploadLog(@RequestBody String logFileText, Authentication authentication) {
+
+        User currentUser = (User) authentication.getPrincipal();
 
         // 1. Get analysis from Python service
         PythonAnalysisResult analysis = analysisService.analyzeLog(logFileText);
@@ -36,12 +40,12 @@ public class LogUploadController {
                 "mvp-project",       // hard-coded project ID
                 logFileText,             // the raw log
                 analysis.parsedStatus(), // the status from Python
-                analysis.parsedDurationSeconds() // the duration from Python
+                analysis.parsedDurationSeconds(), // the duration from Python
+                currentUser.getId()
         );
 
         // 3. Save it to the database!
         LogAnalysis savedLog = logAnalysisRepository.save(logToSave);
-
 
         // 4. Return the *saved* object to the user
         // This includes the new ID and uploadedAt timestamp
@@ -49,13 +53,17 @@ public class LogUploadController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<LogAnalysis>> getAllLogs() {
+    public ResponseEntity<List<LogAnalysis>> getAllLogs(Authentication authentication) {
+
+        // 1. Get the currently logged-in user
+        User currentUser = (User) authentication.getPrincipal();
+
         // This 'findAll' method is built-in from MongoRepository!
         // It fetches all documents from the collection.
-        List<LogAnalysis> allLogs = logAnalysisRepository.findAll();
+        List<LogAnalysis> userLogs = logAnalysisRepository.findByUserId(currentUser.getId());
 
         // Return the full list as a JSON array
-        return ResponseEntity.ok(allLogs);
+        return ResponseEntity.ok(userLogs);
     }
 
 }
