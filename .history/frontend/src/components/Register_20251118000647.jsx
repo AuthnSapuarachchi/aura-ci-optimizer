@@ -13,7 +13,7 @@ function Register({ setIsLoginView }) {
     setError(null);
     setMessage(null);
 
-    fetch(`${API_URL}/auth/register`, {
+    fetch('https://aura-spring-backend-1.onrender.com/api/v1/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

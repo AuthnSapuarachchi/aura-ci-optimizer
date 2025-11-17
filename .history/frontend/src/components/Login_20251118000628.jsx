@@ -1,31 +1,29 @@
-// src/components/Register.jsx
+// src/components/Login.jsx
 import { useState } from 'react';
-import { API_URL } from '../api.jsx';
+import { API_URL } from '../api';
 
-function Register({ setIsLoginView }) {
+function Login({ setToken, setIsLoginView }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError(null);
-    setMessage(null);
 
-    fetch(`${API_URL}/auth/register`, {
+    fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     })
     .then(response => {
       if (!response.ok) {
-        return response.text().then(text => { throw new Error(text) });
+        throw new Error('Invalid credentials');
       }
-      return response.text();
+      return response.json();
     })
     .then(data => {
-      setMessage(data);
+      setToken(data.token); // This updates the state in App.js!
     })
     .catch(err => {
       setError(err.message);
@@ -35,7 +33,7 @@ function Register({ setIsLoginView }) {
   return (
     <div className="auth-container">
       <form onSubmit={handleSubmit}>
-        <h2>Register</h2>
+        <h2>Login</h2>
         <input 
           type="text" 
           placeholder="Username" 
@@ -48,15 +46,14 @@ function Register({ setIsLoginView }) {
           value={password}
           onChange={e => setPassword(e.target.value)} 
         />
-        <button type="submit">Register</button>
-        {message && <p className="success">{message}</p>}
+        <button type="submit">Login</button>
         {error && <p className="error">{error}</p>}
         <p>
-          Have an account? <button type="button" onClick={() => setIsLoginView(true)}>Login</button>
+          No account? <button type="button" onClick={() => setIsLoginView(false)}>Register</button>
         </p>
       </form>
     </div>
   );
 }
 
-export default Register;
+export default Login;

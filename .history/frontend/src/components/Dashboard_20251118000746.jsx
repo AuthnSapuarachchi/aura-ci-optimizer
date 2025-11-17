@@ -24,7 +24,7 @@ function Dashboard({ token, onLogout }) {
 
   // Fetch all logs
   const fetchAllLogs = useCallback(() => {
-    fetch(`${API_URL}/log/all`, {
+    fetch(``/log/all', {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
     })

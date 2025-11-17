@@ -24,7 +24,7 @@ function Dashboard({ token, onLogout }) {
 
   // Fetch all logs
   const fetchAllLogs = useCallback(() => {
-    fetch(`${API_URL}/log/all`, {
+    fetch('https://aura-spring-backend-1.onrender.com/api/v1/log/all', {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
     })

@@ -1,7 +1,6 @@
 // src/components/Dashboard.jsx
 import { useState, useEffect, useCallback } from 'react';
 import '../App.css';
-import { API_URL } from '../api.jsx';
 
 // The Dashboard now receives the token and logout function as props
 function Dashboard({ token, onLogout }) {
@@ -24,7 +23,7 @@ function Dashboard({ token, onLogout }) {
 
   // Fetch all logs
   const fetchAllLogs = useCallback(() => {
-    fetch(`${API_URL}/log/all`, {
+    fetch('https://aura-spring-backend-1.onrender.com/api/v1/log/all', {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
     })
