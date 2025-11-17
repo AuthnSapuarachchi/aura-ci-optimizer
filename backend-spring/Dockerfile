@@ -1,5 +1,5 @@
 # --- Build Stage ---
-# Use an image that has Java 21
+# Use an image that has Java 21 added
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
