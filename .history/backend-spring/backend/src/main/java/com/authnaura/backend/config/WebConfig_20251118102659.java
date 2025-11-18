@@ -17,7 +17,8 @@ public class WebConfig {
                         .allowedOriginPatterns(
                                 "http://localhost:*",
                                 "https://*.vercel.app",
-                                "https://*.netlify.app")
+                                "https://*.netlify.app"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)

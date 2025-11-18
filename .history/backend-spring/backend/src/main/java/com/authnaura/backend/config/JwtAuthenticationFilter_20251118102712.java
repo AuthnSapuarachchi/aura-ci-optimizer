@@ -28,7 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         // 1. Get the "Authorization" header from the request
         final String authHeader = request.getHeader("Authorization");
@@ -65,28 +66,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 6. Load the user from the database
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            System.out.println("User loaded: " + userDetails.getUsername());
 
             // 7. Validate the token
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                System.out.println("Token is valid, authenticating user");
                 // 8. If valid, create an "Authentication" object
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null, // We don't need credentials
-                        userDetails.getAuthorities());
+                        userDetails.getAuthorities()
+                );
                 authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                // 9. Update the Spring Security Context (This is the line that "logs the user
-                // in")
+                // 9. Update the Spring Security Context (This is the line that "logs the user in")
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                System.out.println("User authenticated successfully");
-            } else {
-                System.out.println("Token validation failed");
             }
-        } else {
-            System.out.println("Username null or already authenticated");
         }
         // 10. Pass the request to the next filter
         filterChain.doFilter(request, response);

@@ -28,7 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         // 1. Get the "Authorization" header from the request
         final String authHeader = request.getHeader("Authorization");
@@ -74,12 +75,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null, // We don't need credentials
-                        userDetails.getAuthorities());
+                        userDetails.getAuthorities()
+                );
                 authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                // 9. Update the Spring Security Context (This is the line that "logs the user
-                // in")
+                // 9. Update the Spring Security Context (This is the line that "logs the user in")
                 SecurityContextHolder.getContext().setAuthentication(authToken);
                 System.out.println("User authenticated successfully");
             } else {

@@ -21,7 +21,7 @@ public class LogUploadController {
 
     @Autowired
     public LogUploadController(AnalysisService analysisService,
-            LogAnalysisRepository logAnalysisRepository) {
+                               LogAnalysisRepository logAnalysisRepository) {
         this.analysisService = analysisService;
         this.logAnalysisRepository = logAnalysisRepository;
     }
@@ -31,14 +31,14 @@ public class LogUploadController {
 
         System.out.println("=== Upload Log Endpoint ===");
         System.out.println("Authentication object: " + (authentication != null ? "Present" : "Null"));
-
+        
         if (authentication == null) {
             System.out.println("ERROR: Authentication is null!");
             return ResponseEntity.status(403).build();
         }
 
         System.out.println("Authentication principal type: " + authentication.getPrincipal().getClass().getName());
-
+        
         User currentUser = (User) authentication.getPrincipal();
         System.out.println("Current user: " + currentUser.getUsername());
         System.out.println("Log text length: " + logFileText.length());
@@ -49,11 +49,12 @@ public class LogUploadController {
         // 2. Create our complete data object
         // We'll hard-code a "projectId" for now
         LogAnalysis logToSave = new LogAnalysis(
-                "mvp-project", // hard-coded project ID
-                logFileText, // the raw log
+                "mvp-project",       // hard-coded project ID
+                logFileText,             // the raw log
                 analysis.parsedStatus(), // the status from Python
                 analysis.parsedDurationSeconds(), // the duration from Python
-                currentUser.getId());
+                currentUser.getId()
+        );
 
         // 3. Save it to the database!
         LogAnalysis savedLog = logAnalysisRepository.save(logToSave);
