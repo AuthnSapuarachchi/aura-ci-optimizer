@@ -15,10 +15,11 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/v1/**") // Only allow CORS for your API paths
                         .allowedOrigins(
-                                "http://localhost:5173",
-                                "http://localhost:3000",
+                                "http://localhost:5173", 
+                                "http://localhost:3000", 
                                 "https://aura-ci-optimizer.vercel.app",
-                                "https://aura-ci-optimizer.netlify.app") // The URL of your React app
+                                "https://aura-ci-optimizer.netlify.app"
+                        ) // The URL of your React app
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
