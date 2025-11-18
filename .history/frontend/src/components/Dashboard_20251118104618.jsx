@@ -65,13 +65,7 @@ function Dashboard({ token, onLogout }) {
     setIsLoading(true);
     setAnalysisResult(null);
 
-    console.log('=== Upload Debug Info ===');
-    console.log('API_URL:', API_URL);
-    console.log('Full upload URL:', `${API_URL}/log/upload`);
-    console.log('Token exists:', !!token);
-    console.log('Token length:', token ? token.length : 0);
-    console.log('Log text length:', logText.length);
-    console.log('Headers:', authHeaders);
+    console.log('Uploading log with token:', token ? 'Token present' : 'No token');
 
     fetch(`${API_URL}/log/upload`, {
       method: 'POST',
