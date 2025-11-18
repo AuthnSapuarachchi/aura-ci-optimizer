@@ -1,0 +1,86 @@
+# Vercel Deployment Guide
+
+## Quick Setup
+
+### Step 1: Push to GitHub
+
+```bash
+git add .
+git commit -m "Configure for Vercel deployment"
+git push origin main
+```
+
+### Step 2: Deploy on Vercel
+
+1. Go to [https://vercel.com](https://vercel.com)
+2. Click "Add New Project"
+3. Import your GitHub repository: `aura-ci-optimizer`
+4. **IMPORTANT:** Configure these settings:
+   - **Root Directory:** `frontend` ← Set this!
+   - **Framework Preset:** Vite (auto-detected)
+   - **Build Command:** `npm run build` (auto-detected)
+   - **Output Directory:** `dist` (auto-detected)
+5. Click "Deploy"
+
+### Step 3: Verify
+
+After deployment completes:
+
+1. Open your deployed URL (e.g., `https://aura-ci-optimizer.vercel.app`)
+2. Try logging in
+3. Test uploading a log
+
+## Troubleshooting
+
+### Build Fails with "No such file or directory"
+
+- **Solution:** Make sure Root Directory is set to `frontend` in Vercel project settings
+
+### 403 Error when uploading logs
+
+- **Solution:** Check that your Vercel URL is in the backend CORS configuration
+- Update `backend-spring/backend/src/main/java/com/authnaura/backend/config/WebConfig.java`
+- Add your actual Vercel URL to `allowedOrigins`
+
+### Login works but can't see log history
+
+- **Solution:** Check browser console for errors
+- Verify backend API URL in `frontend/src/api.jsx`
+
+## Project Structure
+
+```
+aura-ci-optimizer/
+├── frontend/              ← Deploy this directory on Vercel
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── vercel.json       ← SPA routing configuration
+├── backend-spring/       ← Deploy on Render
+│   └── backend/
+└── ml-service/           ← Deploy on Render
+```
+
+## Environment Variables
+
+No environment variables needed for the frontend. The API URL is configured in `frontend/src/api.jsx`.
+
+If you need to change the backend URL, update:
+
+```javascript
+export const API_URL = "https://your-backend-url.com/api/v1";
+```
+
+## Backend CORS Update
+
+After deploying, if your Vercel URL is different, update the backend's `WebConfig.java`:
+
+```java
+.allowedOrigins(
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://your-actual-vercel-url.vercel.app"  // ← Add your URL here
+)
+```
+
+Then redeploy your backend on Render.
