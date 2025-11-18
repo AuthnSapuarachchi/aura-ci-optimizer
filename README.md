@@ -1,35 +1,80 @@
 # Aura: The AI-Powered CI/CD Optimizer
 
+> A secure, multi-tenant, full-stack microservice application built with React, Spring Boot, and Python. This project demonstrates enterprise-level skills including JWT authentication, multi-tenant data isolation, and a fully containerized deployment.
 
-Aura is a full-stack, AI-powered platform designed to help developers analyze, optimize, and predict failures in their CI/CD pipelines.
 
-## 1. The Problem
 
-* CI/CD pipelines are slow, costing developer time and compute resources.
-* When pipelines fail, it takes 10-15 minutes to search through thousands of log lines to find the *one* error.
-* Flaky or inconsistent tests are hard to spot.
+---
 
-## 2. The Solution
+## 🚀 Live Demo
 
-Aura connects to your code repository (like GitHub) and ingests your CI/CD logs. It then uses a web dashboard and a machine learning backend to:
+* **Frontend App (Vercel):** [https://aura-ci-optimizer.vercel.app](https://aura-ci-optimizer.vercel.app)
+* **Backend API (Render):** [https://aura-spring-backend-1.onrender.com/api/v1/health](https://aura-spring-backend-1.onrender.com/api/v1/health)
 
-* **Visualize** pipeline performance over time.
-* **Detect** bottlenecks (e.g., "This 'build' step is 40% slower").
-* **Predict** failures before they happen.
-* **Instantly find** the exact error message in a failed log using AI.
+*(Note: The free-tier backend services may "sleep" and take 30-60 seconds on the first load to wake up.)*
 
-## 3. Tech Stack (Planned)
+---
 
-This project is an end-to-end demonstration of Full-stack, DevOps, and MLOps.
+## ✨ Key Features
 
-| Domain | Technology |
-| :--- | :--- |
-| **Frontend** | React, Vercel |
-| **Backend API** | Spring Boot (Java), Render |
-| **ML Service** | Python (Flask), Render |
-| **Databases** | MongoDB Atlas (Main), InfluxDB (Time-Series) |
-| **DevOps** | Docker, GitHub Actions (CI/CD), Kubernetes (Local) |
+* **Secure User Authentication:** Full `Register` and `Login` flow using Spring Security.
+* **Stateless JWT Authorization:** Uses JSON Web Tokens (JWTs) for secure, stateless API communication.
+* **Multi-Tenant Architecture:** A critical feature! Users can **only** view and upload logs associated with their own account.
+* **Microservice Backend:** A decoupled backend with two services:
+    1.  **Spring Boot API:** Handles all user data, authentication, and business logic.
+    2.  **Python (Flask) ML Service:** A separate "brain" that receives log text and performs analysis.
+* **AI-Powered Parsing:** The Python service uses regex (and can be upgraded to a full ML model) to parse log files for status and duration.
+* **Cloud Deployment:** Fully containerized with **Docker** and deployed via a 3-part system (Vercel + Render x2).
 
-## 4. How to Run
+---
 
-(We will fill this in later)
+## 🏗️ Architecture Diagram
+
+This project uses a modern, decoupled microservice architecture.
+
+
+
+1.  **Frontend (Vercel):** The user interacts with the React app.
+2.  **Backend API (Render):** The React app sends all requests to the Spring Boot backend.
+3.  **Database (MongoDB):** The Spring backend handles all data persistence (users, logs).
+4.  **ML Service (Render):** For analysis, the Spring backend calls the Python service, which returns the result.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | React (with Vite) | Building a fast, reactive Single Page Application (SPA). |
+| **Backend API** | Java 21, Spring Boot | The core business logic, security, and API. |
+| **ML Service** | Python 3, Flask | The "brain" for parsing log files. |
+| **Database** | MongoDB Atlas | Secure, cloud-hosted NoSQL database. |
+| **Security** | Spring Security, JWT | Full authentication and authorization. |
+| **Deployment** | Docker, Vercel, Render | Containerization and cloud hosting. |
+
+---
+
+## 🧠 Challenges & Learnings
+
+This project was a deep dive into enterprise-level development. The most challenging parts were:
+
+* **Implementing Multi-Tenancy:** Ensuring a user could *only* access their own data. This was solved by linking every `LogAnalysis` document to a `userId` and building all repository methods (like `findByUserId()`) to use this link.
+* **Debugging Deployment:** The `POST` request failed on the live app, but `GET` worked. I diagnosed this as a **CORS Preflight** (`OPTIONS`) request being blocked by Spring Security. I fixed it by explicitly permitting `HttpMethod.OPTIONS` in my `SecurityConfig`.
+* **The "Sleeping Service":** Another bug was a `403` error caused by the Python service "sleeping." I learned to test for this by "waking up" all services before testing the full chain.
+
+---
+
+## 🏃 How to Run Locally
+
+To run this project on your local machine, you'll need to run all 3 services.
+
+**1. Prerequisites:**
+* Java 21 (JDK)
+* Node.js
+* Python 3.10+
+* Git
+
+**2. Clone the Repository:**
+```bash
+git clone [https://github.com/AuthnSapuarachchi/aura-ci-optimizer.git](https://github.com/AuthnSapuarachchi/aura-ci-optimizer.git)
+cd aura-ci-optimizer
