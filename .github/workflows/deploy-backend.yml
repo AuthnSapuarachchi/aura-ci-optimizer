@@ -1,0 +1,20 @@
+# .github/workflows/deploy-backend.yml
+
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    # This is the magic:
+    # This workflow will ONLY run if a file *inside*
+    # the 'backend-spring/' folder is pushed.
+    paths:
+      - "backend-spring/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy (Backend)
+        run: curl ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}

@@ -1,0 +1,19 @@
+# .github/workflows/deploy-ml.yml
+
+name: Deploy ML Service
+
+on:
+  push:
+    branches:
+      - main
+    # This workflow will ONLY run if a file *inside*
+    # the 'ml-service/' folder is pushed.
+    paths:
+      - "ml-service/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy (ML Service)
+        run: curl ${{ secrets.RENDER_DEPLOY_HOOK_ML }}
